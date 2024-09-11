@@ -1,0 +1,40 @@
+name: Deploy to AWS S3
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+
+      - name: get yarn cache directory path
+        id: yarn-cache-dir-path
+        run : echo "name=dir::$(yarn cache dir)" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Build dependencies
+        run: yarn build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.S3_DEV_BUCKET_UPLOADS_KEY }}
+          aws-secret-access-key: ${{ secrets.S3_DEV_BUCKET_UPLOADS_SECRET }}
+          aws-region: us-east-1
+
+      - name: Deploy static site to S3 bucket
+        run: aws s3 sync ./${{vars.BUILD_LOCATION}} s3://kinops.io-dev/bundles/kinetic-starter-react-base/branches/main/ ${{vars.AWS_S3_OPTIONS}}
