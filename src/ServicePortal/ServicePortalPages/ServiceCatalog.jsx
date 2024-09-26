@@ -80,7 +80,7 @@ export const ServiceCatalog = () => {
             ))
           }
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', flex: 3, gap: '1rem' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', flex: 3, gap: '1rem', maxHeight: '70vh', overflow: 'scroll' }}>
           
         {forms.map((form, idx) => (
               <Link

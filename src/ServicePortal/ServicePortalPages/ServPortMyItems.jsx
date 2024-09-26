@@ -166,7 +166,7 @@ export const ServPortMyItems = () => {
             ))
           }
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', flex: 3, gap: '1rem' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', flex: 3, gap: '1rem', maxHeight: '70vh', overflow: 'scroll' }}>
           
         {currentItems.length ? currentItems.map((item, idx) => (
               <Box
