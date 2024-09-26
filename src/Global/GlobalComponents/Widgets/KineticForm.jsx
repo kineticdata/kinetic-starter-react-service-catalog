@@ -44,7 +44,7 @@ export const KineticForm = props => {
             (response.submission.displayedPage &&
                 response.submission.displayedPage.type !== 'confirmation')
         ) {
-            navigate(`/kapps/${kapp}/forms/${form}/submissions`);
+            navigate(-1);
         }
     };
 

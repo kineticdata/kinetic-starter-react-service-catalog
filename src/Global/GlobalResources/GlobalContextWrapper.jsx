@@ -53,6 +53,7 @@ export function GlobalContextWrapper({children}) {
             let pathComponents = crumbData.path.split('/');
             let breadcrumbsArr = [];
             let tmpPath = '';
+            let pathNameCount = 0
     
             pathComponents.forEach((component, index) => {
                 tmpPath = tmpPath + component + '/';
@@ -60,14 +61,26 @@ export function GlobalContextWrapper({children}) {
                 
                 if (index == 0) {
                     tmpName = "Home";
-                } else if (crumbData.pageNames && crumbData.pageNames.length > 0) {
+                    breadcrumbsArr.push({
+                        page: tmpName || component,
+                        path: tmpPath.substring(0, tmpPath.length - 1)
+                    })
+                } else if (
+                    crumbData.pageNames && 
+                    crumbData.pageNames.length > 0 && 
+                    pathNameCount < crumbData.pageNames.length
+                    
+                ) {
                     tmpName = crumbData.pageNames[index-1];
+                    pathNameCount++
+                    breadcrumbsArr.push({
+                        page: tmpName || component,
+                        path: pathNameCount === crumbData.pageNames.length ?
+                            crumbData.path :
+                            tmpPath.substring(0, tmpPath.length - 1)
+                    })
                 }
     
-                breadcrumbsArr.push({
-                    page: tmpName || component,
-                    path: tmpPath.substring(0, tmpPath.length - 1)
-                })
             });
             
             setBreadcrumbs(breadcrumbsArr);
