@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchCategories, defineKqlQuery, searchSubmissions } from '@kineticdata/react';
 import { GlobalContext } from '../Global/GlobalResources/GlobalContextWrapper';
 
@@ -13,6 +13,7 @@ export function ServicePortalContextWrapper({children}) {
   const [ draftCount, setDraftCount ] = useState();
   const [ submittedCount, setSubmittedCount ] = useState();
   const [ closedCount, setClosedCount ] = useState();
+  const [ searchText,  setSearchText ] = useState('');
 
   const query = defineKqlQuery()
   .in('type', 'type')
@@ -88,37 +89,40 @@ export function ServicePortalContextWrapper({children}) {
     }
   }, [username]);
 
-    useEffect(() => {
-      if (username) {
-        fetchCategories({ kappSlug: 'catalog', include: 'attributesMap' }).then(({ categories, error }) => {
-          if (!error) {
-              // Do not include hidden categories
-              setCategories(categories.filter(cat => cat.attributesMap['Hidden'][0]?.toLowerCase() !== 'true'));
-            } else {
-              setCategoryError(error)
-            }
-        });
-      }
-    }, [username]) 
+  useEffect(() => {
+    if (username) {
+      fetchCategories({ kappSlug: 'catalog', include: 'attributesMap' }).then(({ categories, error }) => {
+        if (!error) {
+            // Do not include hidden categories
+            setCategories(categories.filter(cat => cat.attributesMap['Hidden'][0]?.toLowerCase() !== 'true'));
+          } else {
+            setCategoryError(error)
+          }
+      });
+    }
+  }, [username]);
     
-    const ServicePortalData = useMemo(() => ({
-        categories,
-        categoryError,
-        draftCount,
-        submittedCount,
-        closedCount,
-        setCategories,
-    }), [
-      categories, 
+  const ServicePortalData = useMemo(() => ({
+      categories,
+      searchText,
       categoryError,
       draftCount,
       submittedCount,
       closedCount,
-    ]);
-    
-    return (
-        <ServicePortalContext.Provider value={ServicePortalData}>
-            {children}
-        </ServicePortalContext.Provider>
-    );
+      setCategories,
+      setSearchText,
+  }), [
+    categories, 
+    categoryError,
+    draftCount,
+    submittedCount,
+    closedCount,
+    searchText,
+  ]);
+  
+  return (
+      <ServicePortalContext.Provider value={ServicePortalData}>
+          {children}
+      </ServicePortalContext.Provider>
+  );
 }

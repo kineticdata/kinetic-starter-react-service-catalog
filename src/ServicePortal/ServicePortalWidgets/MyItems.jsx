@@ -32,25 +32,6 @@ export const MyItems = () => {
     .end()
     .end();
 
-  // useEffect(() => {
-  //   const q = query({
-  //     type: ['Catalog Item'],
-  //     coreState: ['Draft'],
-  //     username,
-  //   });
-
-  //   searchSubmissions({
-  //     kapp: 'catalog',
-  //     search: {
-  //       count: true,
-  //       limit: 0,
-  //       include: [],
-  //       q,
-  //     },
-  //   }).then(
-  //     result => result.error ? setDraftCount('N/A') && setPageError(result.error) : setDraftCount(result.count));
-  // }, []);
-
   useEffect(() => {
     const q = query({
       type: ['Catalog Item'],
