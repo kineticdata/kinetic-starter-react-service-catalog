@@ -1,11 +1,26 @@
-import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import React, { useContext, useRef, useState } from 'react';
+import { styled } from '@mui/material/styles';
+import { ServicePortalContext } from '../../../ServicePortal/ServicePortalContext';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 
+const DebounceInput = props => {
+  const { handleDebounce, debounceTimeout, ...other } = props;
+  
+  const timerRef = useRef(undefined);
+  
+  const handleChange = (event) => {
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      handleDebounce(event.target.value);
+    }, debounceTimeout);
+  };
+
+  return <InputBase {...other} onChange={handleChange} />;
+}
+
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-  // maxHeight: '3.5rem',
   marginRight: '1rem',
   borderRadius: theme.shape.borderRadius,
   '&:hover': {
@@ -28,10 +43,10 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  zIndex: 10
+  zIndex: 10,
 }));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
+const StyledInputBase = styled(DebounceInput)(({ theme }) => ({
   color: 'inherit',
   width: '100%',
   '& .MuiInputBase-input': {
@@ -43,7 +58,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
       '&:focus': {
         width: '20rem',
         color: theme.palette.greyscale.main,
-        border: 'solid 1px', 
+        border: 'solid 1px',
         borderColor: theme.palette.greyscale.secondary,
         borderRadius: theme.shape.borderRadius,
         backgroundColor: theme.palette.greyscale.quaternary,
@@ -54,15 +69,29 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 // TODO: add functionality.
 export const SearchAppBar = () => {
+  const servicePortalState = useContext(ServicePortalContext);
+  const { searchText, setSearchText } = servicePortalState;
+
+  const handleDebounce = value => {
+    // Add search query here!
+    setSearchText(value);
+  };
+
   return (
     <Search>
-        <SearchIconWrapper>
-            <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ 'aria-label': 'search' }}
-        />
+      <SearchIconWrapper>
+        <SearchIcon />
+      </SearchIconWrapper>
+      <StyledInputBase
+        placeholder="Search…"
+        inputProps={{
+          'aria-label': 'search',
+          value: searchText,
+          onChange: e => setSearchText(e.target.value),
+        }}
+        debounceTimeout={2000}
+        handleDebounce={handleDebounce}
+      />
     </Search>
   );
-}
+};

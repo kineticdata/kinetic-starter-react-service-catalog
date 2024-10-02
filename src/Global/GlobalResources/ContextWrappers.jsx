@@ -1,5 +1,6 @@
 import React from 'react';
 import { GlobalContextWrapper } from './GlobalContextWrapper';
+import { ServicePortalContextWrapper } from '../../ServicePortal/ServicePortalContext';
 
 // Navigating out of a starter and then back in remounts the Conext component, resetting the data to default.
 // In order for Context data to persist throughout the application (excepting full reloads) all context wrappers
@@ -10,7 +11,8 @@ import { GlobalContextWrapper } from './GlobalContextWrapper';
 // depending on the wrap order below.
 export const ContextWrappers = ({children}) => (
     <GlobalContextWrapper>
-        {/* Add other starter Context wrappers here */}
-        {children}
+        <ServicePortalContextWrapper>
+            {children}
+        </ServicePortalContextWrapper>
     </GlobalContextWrapper>
 )
