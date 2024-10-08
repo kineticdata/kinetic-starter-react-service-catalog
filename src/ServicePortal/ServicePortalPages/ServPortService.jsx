@@ -10,7 +10,6 @@ import Link from '@mui/material/Link';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 export const ServPortService = () => {
-    console.log('OPE')
     const globalState = useContext(GlobalContext);
     const { updateBreadcrumbs } = globalState;
     const { kappSlug, formSlug } = useParams();
