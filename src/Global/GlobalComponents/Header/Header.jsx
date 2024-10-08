@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import logo from '../../Assets/Images/kinetic-data-logo-rgb.svg'
 import { useLocation } from 'react-router-dom';
 import { urlPrefix } from '../../GlobalResources/Helpers';
 import { ProfileDropdown } from './ProfileDropdown';
 import { ProfileChange } from '../Widgets/ProfileChange';
+import { SearchAppBar } from '../Widgets/Search';
+import { ServicePortalContext } from '../../../ServicePortal/ServicePortalContext';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
@@ -15,12 +17,16 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Link from '@mui/material/Link';
 import Modal from '@mui/material/Modal';
-import { SearchAppBar } from '../Widgets/Search';
+import { SearchContent } from './SearchContent';
 
 export const Header = ({ loggedIn, profile }) => {
+  const servicePortalState = useContext(ServicePortalContext);
+  const { searchText } = servicePortalState;
   const [ profileAnchor, setProfileAnchor ] = useState(null);
   const [ menuAnchor, setMenuAnchor ] = useState(null);
+  const [ searchAnchor, setSearchAnchor ] = useState(null);
   const [ isModalOpen , setIsModalOpen ] = useState(false);
+  const [ isSearchOpen , setIsSearchOpen ] = useState(false);
   const isProfileOpen = useMemo(() => Boolean(profileAnchor), [profileAnchor]);
   const isMenuOpen = useMemo(() => Boolean(menuAnchor), [menuAnchor]);
   const location = useLocation();
@@ -39,6 +45,14 @@ export const Header = ({ loggedIn, profile }) => {
         setProfileAnchor(null);
       } else {
         setMenuAnchor(event.currentTarget)
+      }
+      return;
+    }
+    if (type === 'search') {
+      if (isSearchOpen) {
+        setSearchAnchor(null);
+      } else {
+        setSearchAnchor(event.currentTarget)
       }
       return;
     }
@@ -106,6 +120,14 @@ const helpContent = useMemo(() => {
           </Link>
     ]
 }}, [profile])
+
+useEffect(() => {
+  if (searchText.length > 0) {
+    setIsSearchOpen(true);
+  } else {
+    setSearchAnchor(false);
+  }
+}, [searchText])
   
   return (
     <Box>
@@ -119,7 +141,7 @@ const helpContent = useMemo(() => {
             </Link>
           {loggedIn && profile && (
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-              {location.pathname.includes('/service-portal') && <SearchAppBar />}
+              {location.pathname.includes('/service-portal') && <SearchAppBar isSearchOpen={isSearchOpen} setIsSearchOpen={toggleDropdown} />}
               <IconButton
                 edge="start"
                 color="inherit"
@@ -147,6 +169,27 @@ const helpContent = useMemo(() => {
               >
                 <Avatar variant='circular' sx={{ bgcolor: 'secondary.secondary'}}>{profile.displayName[0]}</Avatar>
               </IconButton>
+              <Menu
+                autoFocus={false}
+                disableAutoFocus={true}
+                disableEnforceFocus={true}                
+                open={isSearchOpen}
+                onClose={() => {
+                  setSearchAnchor(null);
+                  setIsSearchOpen(false);
+                }}
+                anchorEl={searchAnchor}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+              >
+                <SearchContent closeMenu={() => setIsSearchOpen(false)} />     
+              </Menu> 
               <Menu
                 open={isMenuOpen}
                 onClose={() => setMenuAnchor(null)}

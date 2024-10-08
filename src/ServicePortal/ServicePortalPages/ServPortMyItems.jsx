@@ -130,8 +130,6 @@ export const ServPortMyItems = () => {
     cloneSubmission({ id: submissionId }).then(({error}) => !error ? navigate(0) && setSubmissionId(null) : setPageError(error));
   }
 
-  console.log('OPE', submissionId, currentItems)
-
   return !pageError && currentItems && (
     <Box sx={{ mb: '1rem' }}>
       <PageTitle title={`My Items`} />

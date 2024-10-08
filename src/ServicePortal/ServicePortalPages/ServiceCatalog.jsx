@@ -86,7 +86,7 @@ export const ServiceCatalog = () => {
               <Link
                 key={idx}
                 component={RouterLink}
-                to={`/kapps/${form.kapp.slug}/forms/${form.slug}`}
+                to={`/service-portal/service/${form.kapp.slug}/${form.slug}`}
                 sx={{
                   display: 'flex',
                   textDecoration: 'none',
