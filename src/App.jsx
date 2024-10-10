@@ -23,7 +23,9 @@ export const App = ({ initialized, loggedIn, loginProps, timedOut }) => {
   // TODO: Remove the bang from this to get correct theme
   // Developing in light mode right now
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const getTheme = getDesignTokens(!prefersDarkMode ? 'dark' : 'light');
+  // set this up when doing theme work
+  // const getTheme = getDesignTokens(!prefersDarkMode ? 'dark' : 'light');
+  const getTheme = getDesignTokens('light');
 
   const theme = useMemo(
     () =>
