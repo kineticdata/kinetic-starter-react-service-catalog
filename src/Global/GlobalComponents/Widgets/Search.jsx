@@ -68,12 +68,11 @@ const StyledInputBase = styled(DebounceInput)(({ theme }) => ({
 }));
 
 // TODO: add functionality.
-export const SearchAppBar = () => {
+export const SearchAppBar = ({ isSearchOpen, setIsSearchOpen }) => {
   const servicePortalState = useContext(ServicePortalContext);
-  const { searchText, setSearchText } = servicePortalState;
+  const { setSearchText } = servicePortalState;
 
   const handleDebounce = value => {
-    // Add search query here!
     setSearchText(value);
   };
 
@@ -86,8 +85,9 @@ export const SearchAppBar = () => {
         placeholder="Search…"
         inputProps={{
           'aria-label': 'search',
-          value: searchText,
-          onChange: e => setSearchText(e.target.value),
+          onChange: e => {
+            !isSearchOpen && setIsSearchOpen('search', e);
+          },
         }}
         debounceTimeout={2000}
         handleDebounce={handleDebounce}
